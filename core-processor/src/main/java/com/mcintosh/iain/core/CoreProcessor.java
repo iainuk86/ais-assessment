@@ -47,8 +47,8 @@ public final class CoreProcessor {
     // Read the input
     String input = readFileContents(parseContext.inputFile());
 
-    // Process into required output
-    String output = strategy.execute(input);
+    // Process into required output. Add a newline character in case of appending to existing file
+    String output = strategy.execute(input) + "\n";
 
     // Write to destination
     writeOutput(output, parseContext);

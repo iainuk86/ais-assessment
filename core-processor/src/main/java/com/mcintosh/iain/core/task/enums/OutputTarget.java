@@ -11,7 +11,7 @@ public enum OutputTarget {
 
   public static Optional<OutputTarget> fromValue(String value) {
     return Arrays.stream(OutputTarget.values())
-        .filter(f -> f.name().equalsIgnoreCase(value))
+        .filter(target -> target.name().equalsIgnoreCase(value))
         .findFirst();
   }
 }

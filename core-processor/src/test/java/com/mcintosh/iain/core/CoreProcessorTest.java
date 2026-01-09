@@ -58,7 +58,7 @@ class CoreProcessorTest {
     CoreProcessor.process(context);
 
     String output = Files.readString(outputFile);
-    assertThat(output).isEqualTo("bnn\n");
+    assertThat(output).isEqualTo("bnn\n\n");
   }
 
   @Test
