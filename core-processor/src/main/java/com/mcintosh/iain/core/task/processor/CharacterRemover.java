@@ -2,6 +2,8 @@ package com.mcintosh.iain.core.task.processor;
 
 import com.mcintosh.iain.core.task.enums.CaseMode;
 import java.util.Set;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Utility class for removing specified characters from a string.
@@ -27,6 +29,7 @@ import java.util.Set;
  * </p>
  */
 public final class CharacterRemover {
+  private static final Logger log = LoggerFactory.getLogger(CharacterRemover.class);
 
   private CharacterRemover() {
     throw new UnsupportedOperationException("Class not instantiable");
@@ -46,10 +49,14 @@ public final class CharacterRemover {
    * @return a new string with the specified characters removed; the original string is unchanged
    */
   public static String execute(String input, Set<Character> charsToRemove, CaseMode caseMode) {
+    log.debug("Beginning character removal");
+    long startNanos = System.nanoTime();
+
     if (input == null || input.isBlank()) {
       return "";
     }
 
+    // No characters to remove, so return the input untouched
     if (charsToRemove == null || charsToRemove.isEmpty()) {
       return input;
     }
@@ -66,6 +73,8 @@ public final class CharacterRemover {
       }
     }
 
+    long elapsedMs = (System.nanoTime() - startNanos) / 1_000_000;
+    log.debug("Characters removed in {}ms", elapsedMs);
     return output.toString();
   }
 }

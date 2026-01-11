@@ -6,11 +6,14 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Utility class for validating and sanitising arguments used to create a ParseContext.
  */
 public final class ArgumentValidator {
+  private static final Logger log = LoggerFactory.getLogger(ArgumentValidator.class);
 
   private ArgumentValidator() {
     throw new UnsupportedOperationException("Class not instantiable");
@@ -29,6 +32,7 @@ public final class ArgumentValidator {
 
     Path filePath = Paths.get(arg);
     if (!Files.exists(filePath) || !Files.isRegularFile(filePath) || !Files.isReadable(filePath)) {
+      log.debug("Invalid input file");
       throw new IllegalArgumentException("Invalid input file");
     }
 
@@ -51,18 +55,22 @@ public final class ArgumentValidator {
       // Create parent directories if they do not exist
       Path parentDir = filePath.getParent();
       if (parentDir != null && !Files.exists(parentDir)) {
+        log.debug("Parent directories do not exist. Creating them now");
         Files.createDirectories(parentDir);
       }
 
       // Create the file if it does not exist
       if (!Files.exists(filePath)) {
+        log.debug("Creating new output file");
         Files.createFile(filePath);
       }
     } catch (IOException e) {
+      log.debug("Invalid output file");
       throw new IllegalArgumentException("Invalid output file", e);
     }
 
     if (!Files.isWritable(filePath)) {
+      log.debug("Output file is not writable");
       throw new IllegalArgumentException("Output file is not writable");
     }
 

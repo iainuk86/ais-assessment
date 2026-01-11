@@ -4,6 +4,8 @@ import com.mcintosh.iain.core.util.ArgumentValidator;
 import com.mcintosh.iain.core.task.enums.OutputTarget;
 import com.mcintosh.iain.core.task.enums.ParseTaskType;
 import java.nio.file.Path;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Represents the context for a parsing operation.
@@ -40,6 +42,7 @@ public record ParseContext(
     Path outputFile,
     OutputTarget outputTarget
 ) {
+  private static final Logger log = LoggerFactory.getLogger(ParseContext.class);
 
   /**
    * Returns a new builder for constructing {@link ParseContext} instances.
@@ -96,9 +99,11 @@ public record ParseContext(
     public ParseContext build() {
       // Check required fields
       if (parseTaskRaw == null || parseTaskRaw.isBlank()) {
+        log.error("ParseTask not provided");
         throw new IllegalArgumentException("ParseTask is required");
       }
       if (inputFileRaw == null || inputFileRaw.isBlank()) {
+        log.error("Input file not provided");
         throw new IllegalArgumentException("Input file is required");
       }
 
@@ -109,6 +114,7 @@ public record ParseContext(
       Path outputFile             = resolveOutputFile(outputFileRaw);
       OutputTarget outputTarget   = resolveOutputTarget(outputTargetRaw, outputFile);
 
+      log.debug("ParseContext built successfully");
       return new ParseContext(parseTaskType, inputFile, outputFile, outputTarget);
     }
 
@@ -120,6 +126,7 @@ public record ParseContext(
      */
     private Path resolveOutputFile(String outputFileRaw) {
       if (outputFileRaw == null || outputFileRaw.isBlank()) {
+        log.debug("Output file not provided");
         return null;
       }
 
@@ -135,6 +142,7 @@ public record ParseContext(
      */
     private OutputTarget resolveOutputTarget(String rawTarget, Path outputFile) {
       if (rawTarget == null || rawTarget.isBlank() || outputFile == null) {
+        log.debug("No output file target or file specified, printing to console");
         return OutputTarget.CONSOLE;
       }
 

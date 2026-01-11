@@ -1,6 +1,8 @@
 package com.mcintosh.iain.core.task.processor;
 
 import com.mcintosh.iain.core.task.enums.CaseMode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Utility class for counting occurrences of a substring in a string.
@@ -29,6 +31,7 @@ import com.mcintosh.iain.core.task.enums.CaseMode;
  * </p>
  */
 public final class StringCounter {
+  private static final Logger log = LoggerFactory.getLogger(StringCounter.class);
 
   private StringCounter() {
     throw new UnsupportedOperationException("Class not instantiable");
@@ -48,6 +51,9 @@ public final class StringCounter {
    *         0 if {@code searchValue} is empty or not found
    */
   public static int execute(String input, String searchValue, CaseMode caseMode) {
+    log.debug("Beginning string counter");
+    long startNanos = System.nanoTime();
+
     if (input == null || input.isBlank() || searchValue == null || searchValue.isBlank()) {
       return 0;
     }
@@ -71,6 +77,8 @@ public final class StringCounter {
       j = 0;
     }
 
+    long elapsedMs = (System.nanoTime() - startNanos) / 1_000_000;
+    log.debug("Strings counted in {}ms", elapsedMs);
     return count;
   }
 

@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Main processing entry point for the library.
@@ -29,6 +31,7 @@ import java.nio.file.StandardOpenOption;
  * }</pre>
  */
 public final class CoreProcessor {
+  private static final Logger log = LoggerFactory.getLogger(CoreProcessor.class);
 
   private CoreProcessor() {
     throw new UnsupportedOperationException("Class not instantiable");
@@ -41,6 +44,8 @@ public final class CoreProcessor {
    * @throws IOException if reading or writing the file fails
    */
   public static void process(ParseContext parseContext) throws IOException {
+    log.info("Task processing initiated");
+
     // Determine strategy to use to process input
     ParseTask strategy = ParseTaskRegistry.getStrategy(parseContext.parseTaskType());
 
@@ -62,6 +67,8 @@ public final class CoreProcessor {
    * @throws IOException if reading the file fails
    */
   private static String readFileContents(Path filePath) throws IOException {
+    log.debug("Reading input file");
+
     StringBuilder content = new StringBuilder();
 
     try (BufferedReader reader = Files.newBufferedReader(filePath)) {
@@ -83,6 +90,8 @@ public final class CoreProcessor {
    * @throws IOException if writing the output fails
    */
   private static void writeOutput(String output, ParseContext parseContext) throws IOException {
+    log.debug("Writing to output");
+
     if (OutputTarget.CONSOLE == parseContext.outputTarget()) {
       writeToConsole(output);
     } else {

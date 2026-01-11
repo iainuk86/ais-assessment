@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Utility class for counting occurrences of specific characters in a string.
@@ -24,6 +26,7 @@ import java.util.Set;
  * </p>
  */
 public final class CharacterCounter {
+  private static final Logger log = LoggerFactory.getLogger(CharacterCounter.class);
 
   private CharacterCounter() {
     throw new UnsupportedOperationException("Class not instantiable");
@@ -45,6 +48,9 @@ public final class CharacterCounter {
    */
   public static Map<Character, Integer> count(
       String input, Set<Character> charsToCount, CaseMode caseMode) {
+    log.debug("Beginning character count");
+    long startNanos = System.nanoTime();
+
     if (input == null || charsToCount == null || charsToCount.isEmpty()) {
       return Collections.emptyMap();
     }
@@ -61,6 +67,8 @@ public final class CharacterCounter {
       counts.computeIfPresent(c, (k, v) -> v + 1);
     }
 
+    long elapsedMs = (System.nanoTime() - startNanos) / 1_000_000;
+    log.debug("Characters counted in {}ms", elapsedMs);
     return counts;
   }
 }
