@@ -1,4 +1,4 @@
-# AIS Supplementary Assessment.
+# AIS Supplementary Assessment
 
 ## Overview
 
