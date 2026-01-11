@@ -87,7 +87,7 @@ public final class CommandLineParser {
           break;
         case "-h", "--help":
           Usage.showUsage();
-          break;
+          return null;
         default:
           throw new IllegalArgumentException("Unrecognised argument: " + arg);
       }
