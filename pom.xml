@@ -13,6 +13,7 @@
 
   <modules>
     <module>core-processor</module>
+    <module>app-rest</module>
   </modules>
 
   <properties>

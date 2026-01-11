@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>AIS REST Demonstration</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f7fa;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 40px auto;
+      background: #ffffff;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: bold;
+    }
+
+    input,
+    select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 14px;
+      background-color: #fff;
+      box-sizing: border-box;
+      font-family: inherit;
+    }
+
+    /* Remove browser-specific styling */
+    select {
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      background-image:
+          linear-gradient(45deg, transparent 50%, #666 50%),
+          linear-gradient(135deg, #666 50%, transparent 50%);
+      background-position:
+          calc(100% - 18px) calc(50% - 3px),
+          calc(100% - 13px) calc(50% - 3px);
+      background-size: 5px 5px;
+      background-repeat: no-repeat;
+      padding-right: 30px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #0658b0;
+      border: none;
+      color: white;
+      font-size: 15px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    /* Error popup styling */
+    .popup {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      min-width: 300px;
+      max-width: 420px;
+      padding: 14px 16px;
+      border-radius: 6px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 14px;
+      z-index: 1000;
+      animation: slideIn 0.3s ease-out;
+    }
+
+    .popup-success {
+      background-color: #188038; /* green */
+      color: #ffffff;
+    }
+
+    .popup-error {
+      background-color: #d93025;
+      color: #ffffff;
+    }
+
+    .popup-close {
+      background: none;
+      border: none;
+      color: #ffffff;
+      font-size: 16px;
+      cursor: pointer;
+      line-height: 1;
+      padding: 0;
+    }
+
+    .popup-close:hover {
+      opacity: 0.8;
+    }
+
+    /* Animation */
+    @keyframes slideIn {
+      from {
+        transform: translateX(20px);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+  </style>
+
+</head>
+<body>
+
+<div class="container">
+  <h2>Initiate Parse Task</h2>
+  <!-- Task result popups -->
+  <div id="successPopup" class="popup popup-success" style="display: none;">
+    <span style="width:80%">Success!</span>
+    <button class="popup-close" onclick="hideSuccessPopup()" style="width:20%">✕</button>
+  </div>
+  <div id="errorPopup" class="popup popup-error" style="display: none">
+    <span id="errorMessage" style="width:80%"></span>
+    <button class="popup-close" onclick="hideErrorPopup()" style="width:20%">✕</button>
+  </div>
+
+  <form id="parseForm" th:object="${parseTaskDto}">
+
+    <!-- Input File -->
+    <div class="form-group">
+      <label for="inputFile">Input File *</label>
+      <input type="text" id="inputFile" th:field="*{inputFile}" />
+    </div>
+
+    <!-- Output Target -->
+    <div class="form-group">
+      <label for="outputTarget">Output Target</label>
+
+      <select id="outputTarget"
+              th:field="*{outputTarget}"
+              onchange="toggleOutputFile()">
+        <option value="" disabled selected>
+          -- Select output target --
+        </option>
+        <option value="console">Console</option>
+        <option value="file">File</option>
+      </select>
+    </div>
+
+    <!-- Output File -->
+    <div class="form-group" id="outputFileGroup" style="display: none;">
+      <label for="outputFile">Output File</label>
+      <input type="text"
+             id="outputFile"
+             th:field="*{outputFile}"
+             placeholder="e.g. output.txt"/>
+    </div>
+
+    <!-- Task type -->
+    <div class="form-group">
+      <label for="parseTask">Parse Task Type *</label>
+
+      <select id="parseTask" th:field="*{parseTask}">
+        <option value="" disabled selected>
+          -- Select a task --
+        </option>
+
+        <option th:each="task : ${parseTaskTypes}"
+                th:value="${task.value}"
+                th:text="${#strings.capitalize(task.value.replace('-', ' '))}">
+        </option>
+      </select>
+    </div>
+
+    <button type="submit">Submit Parse Task</button>
+  </form>
+</div>
+
+</body>
+<script th:src="@{/js/main.js}"></script>
+</html>
